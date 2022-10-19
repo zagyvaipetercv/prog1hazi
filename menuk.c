@@ -59,7 +59,7 @@ Menu *menuPontTorlese(Menu *menuk, int *menuMeret, int torlendoIndexe){
         strcpy_s(ujMenuk[i].nev, 101, menuk[i].nev);
         strcpy_s(ujMenuk[i].leiras, 501, menuk[i].leiras);
     }
-    for (int i = torlendoIndexe; i < *menuMeret; i++)
+    for (int i = torlendoIndexe+1; i < *menuMeret; i++)
     {
         ujMenuk[i-1].ar = menuk[i].ar;
         strcpy_s(ujMenuk[i-1].nev, 101, menuk[i].nev);
