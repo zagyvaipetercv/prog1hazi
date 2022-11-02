@@ -19,13 +19,24 @@ void menukListazas(Menu *menuk, int *menuMeret){
     }
 }
 
-void asztalokListazas(Asztalok asztalok){
-    for (int y = 0; y < asztalok.oszlopokSzama; y++)
+void asztalokListazas(Asztal *asztalok){
+    int sorMax, oszlopMax;
+    maxSorokOszlopok(asztalok, &sorMax, &oszlopMax);
+    for (int sor = 0; sor < sorMax; sor++)
     {
-        for (int x = 0; x < asztalok.oszlopokSzama; x++)
+        for (int oszlop = 0; oszlop < oszlopMax; oszlop++)
         {
-            printf("%c ", (asztalok.elerhetok[y+x]?'O':'X'));
+            for (Asztal *mozgo = asztalok; mozgo != NULL; mozgo = mozgo->kov){
+                if (mozgo->sor == sor && mozgo->oszlop == oszlop)
+                {
+                    if(mozgo->elerheto == true)
+                        printf("%d", mozgo->ferohely);
+                    else
+                        printf("X");
+                }
+                printf(" ");
+            }
+        printf("\n");
         }
-        printf("\n\n");
     }
 }
