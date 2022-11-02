@@ -1,5 +1,5 @@
-#ifndef MENUK_H
-#define MENUK_H
+#ifndef MENU_H
+#define MENU_H
 
 #include <malloc.h>
 #include <string.h>

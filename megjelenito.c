@@ -18,3 +18,14 @@ void menukListazas(Menu *menuk, int *menuMeret){
         vonalKiir(10);
     }
 }
+
+void asztalokListazas(Asztalok asztalok){
+    for (int y = 0; y < asztalok.oszlopokSzama; y++)
+    {
+        for (int x = 0; x < asztalok.oszlopokSzama; x++)
+        {
+            printf("%c ", (asztalok.elerhetok[y+x]?'O':'X'));
+        }
+        printf("\n\n");
+    }
+}
