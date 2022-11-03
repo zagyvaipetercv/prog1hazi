@@ -1,15 +1,29 @@
+#include "debugmalloc.h"
 #include "menu.h"
 #include "asztal.h"
 #include "megjelenito.h"
 
 
-int main(int argc, char const *argv[])
-{
-    //Menük tömbjének létrhezozása, deklarálása
-    int menuMeret = 0;
-    Menu *menuk = (Menu*)malloc(menuMeret*sizeof(Menu));
-    Asztal *asztalok = NULL;
+void asztlaokListazasMain(Asztal* kezdo) {
+    for (Asztal *mozgo = kezdo; mozgo != NULL; mozgo = mozgo->kov)
+    {
+        printf("%p\n", mozgo);
+    }
+}
 
+int main(int argc, char const *argv[]){
+    Asztal *asztalok = NULL;
+    asztalok = ujAsztalHozzaad(asztalok, 6, 4, 5);
+    asztalok = ujAsztalHozzaad(asztalok, 1, 1, 1);
+    asztalok = ujAsztalHozzaad(asztalok, 10, 1, 2);
+    asztalok = ujAsztalHozzaad(asztalok, 3, 2, 1);
+    asztalok = ujAsztalHozzaad(asztalok, 1, 5, 1);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 3, 2);
+
+    asztalok = asztalFoglalas(asztalok, 2, 1);
+
+    asztalokListazas(asztalok);
+    /*
     int felhasznaloInput;
     while(scanf("%d", &felhasznaloInput) != EOF){
         switch (felhasznaloInput)
@@ -49,21 +63,9 @@ int main(int argc, char const *argv[])
             break;
         }
     }
+    */
 
-
-    menuFelszabaditas(menuk, &menuMeret);
+    asztalokListaFelszabaditas(asztalok);
 
     return 0;
 }
-
-/*
-    Készíts programot, amely egy étteremben az egyes asztalokhoz tartozó megrendeléseket jegyzi meg. Legyen lehetőség:
-
-    Az asztalok megadására: hány fős, hol helyezkedik el az éttermen belül.
-    Az étterem menüjének rögzítésére.
-    Új asztal nyitására vendégek érkezése esetén.
-    Rendelések felvételére a menü alapján.
-    Számla „nyomtatására” (képernyőre).
-    Foglaltsági térkép megjelenítésére, figyelembe véve az asztalok elhelyezkedését (grafikus vagy egyszerű konzolos felületen).
-    Az adatokat mentse a program fájlba is, hiszen azokat nem felejtheti el egy újraindítás miatt!
-*/

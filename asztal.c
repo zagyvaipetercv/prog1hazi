@@ -1,38 +1,49 @@
 #include "asztal.h"
 
-void ujAsztalHozzaad(Asztal **asztalok, int ferohely, int sor, int oszlop){
+
+Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
+
     //Új asztal létrehozása, értékeinek megadása:
-    Asztal *ujASztal = (Asztal*)malloc(sizeof(Asztal));
-    ujASztal->elerheto = true;
-    ujASztal->ferohely = ferohely;
-    ujASztal->sor = sor;
-    ujASztal->oszlop = oszlop;
-    ujASztal->kov = NULL;
+    Asztal *ujAsztal = (Asztal*)malloc(sizeof(Asztal));
+    ujAsztal->elerheto = true;
+    ujAsztal->ferohely = ferohely;
+    ujAsztal->sor = sor;
+    ujAsztal->oszlop = oszlop;
+    ujAsztal->kov = NULL;
+
+    bool marLetezik = false;
 
     //Megvizsgálja, hogy a lista első eleme lessz-e az új asztal
-    if (*asztalok == NULL)
+    if (asztalok == NULL)
     {
         //Ha igen, akkor egyből vissza is adja az értéket.
-        *asztalok = ujASztal;
-        return;
+        return ujAsztal;
     }
-    
-    //Ha nem, akkor végighalad a listán az utolsó elemig:
-    Asztal *mozgo;
-    for (mozgo = *asztalok; mozgo->kov != NULL; mozgo = mozgo->kov)
+
+    //Vizsgálja, hogy létezik-e már a létrehozandó új asztal:
+    for (Asztal *mozgo = asztalok; mozgo->kov != NULL; mozgo = mozgo->kov)
     {
-        //Vizsgálja, hogy létezik-e már olyan asztal, ami a kért helyen van
         if (mozgo->sor == sor && mozgo->oszlop == oszlop)
         {
-            //Ha igen, hibaüzentet küld, eldobja a már létrehozott új asztalt és kilép a függvényből
-            printf("A megadott helyen mar letezik asztal.");
-            free(ujASztal);
-            return;
+            //Ha igen, hibaüzentet küld, felszabadítja az asztalt és a "marLetezik" változót igazra állítja:
+            printf("Mar letezik ez az asztal\n");
+            free(ujAsztal);
+            marLetezik = true;
         }
     }
 
-    //Utolsó elemhez hozzáfűzi az új asztalt
-    mozgo->kov = ujASztal;
+    if (!marLetezik)
+    {
+        //Ha még nem létező asztalt akarunk létrehozni, akkor a lista elejére tűzzük és visszaadjuk
+        ujAsztal->kov = asztalok;
+        return ujAsztal;
+    }
+    else
+    {
+        //Ha már létezőt, akkor pedig az eredeti listát adjuk vissza
+        return asztalok;
+    }
+
 }
 
 void asztalokListaFelszabaditas(Asztal *asztalok){
@@ -46,32 +57,10 @@ void asztalokListaFelszabaditas(Asztal *asztalok){
     }
 }
 
-void asztalTorlese(Asztal *asztalok, int sor, int oszlop){
-    Asztal *mozgo = asztalok;   //itteráló változó, felveszi a kezdő értéket  
-    Asztal *mozgoElotti;    //mozgó változót megelőző érték (szükség van rá mert nem két irányú a lista)
-    //Végighalad a listán, amíg a keresett asztalt meg nem találta
-    //asztalKereses() nem használható, mert szükség van a mozgó előtti lista tagra is
-    while (mozgo->oszlop != oszlop && mozgo->sor == sor)
-    {
-        //Vizsgálja hogy végighaladt-e listán a végéig:
-        if (mozgo == NULL)
-        {
-            //Ha igen visszajelez a felhasználónak és kilép
-            printf("Keresett asztal nem létezik");
-            return;
-        }
-        mozgoElotti = mozgo;
-        mozgo = mozgo->kov;
-    }
-    //Beállítja a törlendő előtti asztal "következő" értékét:
-    mozgoElotti->kov = mozgo->kov;
-    //Felsazabdítja a törlendő asztalt:
-    free(mozgo);
-}
-
 Asztal *asztalKereses(Asztal *asztalok, int sor, int oszlop){
     //Végighalad a teljes listán:
-    for (Asztal *mozgo = asztalok; mozgo != NULL; mozgo != mozgo->kov)
+    Asztal* mozgo = asztalok;
+    for (mozgo = asztalok; mozgo != NULL; mozgo = mozgo->kov)
     {
         //Ha megtalálja a keresett asztalt, akkor visszaadja:
         if (mozgo->sor == sor && mozgo->oszlop == oszlop)
@@ -80,32 +69,57 @@ Asztal *asztalKereses(Asztal *asztalok, int sor, int oszlop){
         }
     }
     //Ha nem volt meg a keresett asztal, akkor értesíti a felhasználót és NULL-t ad vissza:
-    printf("A keresett asztal nem letezik");
+    printf("A keresett asztal nem letezik\n");
     return NULL;     
 }
 
-void asztalFoglalas(Asztal *asztalok, int sor, int oszlop){
+Asztal *asztalTorlese(Asztal *asztalok, int sor, int oszlop){
+    Asztal *mozgo = asztalok;   //itteráló változó, felveszi a kezdő értéket  
+    Asztal *mozgoElotti = NULL;    //mozgó változót megelőző érték (szükség van rá mert nem két irányú a lista)
+
+    Asztal* torlendo = asztalKereses(asztalok, sor, oszlop); //Megkeresi a törlendő elemet
+    //Ha ez az elem létezett, akkor...
+    if (torlendo != NULL)
+    {
+        Asztal* torlendoElotti = NULL;  //Felvesz egy törlendő előtti elemet (kezdetben ismeretlen, ezért NULL)
+        //Megkeresi a törlendő elem előtti listaelemet:
+        for (Asztal* mozgo = asztalok; mozgo != torlendo; mozgo = mozgo->kov)
+        {
+            if (mozgo->kov == torlendo)
+                torlendoElotti = mozgo;
+        }
+
+        //Törlendő előtti elem következő (törlés utáni) listaelem beállítása:
+        torlendoElotti->kov = torlendo->kov;
+    }
+
+    return asztalok;
+}
+
+Asztal *asztalFoglalas(Asztal *asztalok, int sor, int oszlop){
     //Megkeresi a kért asztalt:
     Asztal *keresett = asztalKereses(asztalok, sor, oszlop);
     if (keresett != NULL) //Vizsgálja, hogy az asztal létezett-e (hibaüzenetet már küldött a keresés, ha nem)
     {
         if (keresett->elerheto == false) //Megvizsgálja hogy foglalt asztalt akarunk-e foglalni
-            printf("A(z) (%d-sor) (%d-oszlop) asztal mar foglalt", keresett->sor, keresett->oszlop); //Ha igen, akkor hibaüzenetet küld
+            printf("A(z) (%d-sor) (%d-oszlop) asztal mar foglalt\n", keresett->sor, keresett->oszlop); //Ha igen, akkor hibaüzenetet küld
         else //Ha nem, akkor lefoglalja
             keresett->elerheto = false;
     }
+    return asztalok;
 }
 
-void asztalFelszabaditas(Asztal *asztalok, int sor, int oszlop){
+Asztal *asztalFelszabaditas(Asztal *asztalok, int sor, int oszlop){
     //Megkeresi az asztlat:
     Asztal *keresett = asztalKereses(asztalok, sor, oszlop);
     if (keresett != NULL) //Vizsgálja, hogy az asztal létezett-e (hibaüzenetet már küldött a keresés, ha nem)
     {
         keresett->elerheto = true;
     }
+    return asztalok;
 }
 
-void maxSorokOszlopok(Asztal *asztalok, int *maxSorok, int *maxOszlopok){
+void maxSorokOszlopok(Asztal *asztalok, int *maxSorok, int *maxOszlopok){ 
     //sorok és oszlopok maximális száma kezdetben az első asztal értéke: 
     int sorMax = asztalok->sor;        
     int oszlopMax = asztalok->oszlop;

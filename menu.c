@@ -1,5 +1,7 @@
 #include "menu.h"
 
+// TODO: Rework all (make menu to linked list)
+
 //ujMenuFelvetele:
 /*
     Visszatérítési értéke:  egy Menu pointer, ahova tárolni

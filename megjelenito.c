@@ -22,21 +22,28 @@ void menukListazas(Menu *menuk, int *menuMeret){
 void asztalokListazas(Asztal *asztalok){
     int sorMax, oszlopMax;
     maxSorokOszlopok(asztalok, &sorMax, &oszlopMax);
-    for (int sor = 0; sor < sorMax; sor++)
+    bool voltAsztal;
+    printf("Az alabbi elhelyezkedesben erhetok el asztalok:\n(X - foglalt)\n(szam - ferohely)\n");
+    vonalKiir(6 * oszlopMax);
+    for (int y = 1; y <= sorMax; y++)
     {
-        for (int oszlop = 0; oszlop < oszlopMax; oszlop++)
+        for (int x = 1; x <= oszlopMax; x++)
         {
-            for (Asztal *mozgo = asztalok; mozgo != NULL; mozgo = mozgo->kov){
-                if (mozgo->sor == sor && mozgo->oszlop == oszlop)
-                {
-                    if(mozgo->elerheto == true)
-                        printf("%d", mozgo->ferohely);
+        voltAsztal = false;
+            for (Asztal *mozgo = asztalok; mozgo != NULL; mozgo = mozgo->kov)
+            {
+                if (mozgo->sor == y && mozgo->oszlop == x) {
+                    voltAsztal = true;
+                    if (mozgo->elerheto == true)
+                        printf("%3d  ", mozgo->ferohely);
                     else
-                        printf("X");
+                        printf("  X  ");
                 }
-                printf(" ");
-            }
-        printf("\n");
+            }       
+            printf(!voltAsztal ? "     ":"");
+            printf("|");
         }
+        printf("\n");
+        vonalKiir(6*oszlopMax);
     }
 }
