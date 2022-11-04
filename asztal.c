@@ -1,5 +1,6 @@
 #include "asztal.h"
 
+// TODO: egy asztal torlese, ha elso elemet akarjuk törölni, akkor nem fog mukodni, mert torlendo elotti nem letezik
 
 Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
 
@@ -21,7 +22,7 @@ Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
     }
 
     //Vizsgálja, hogy létezik-e már a létrehozandó új asztal:
-    for (Asztal *mozgo = asztalok; mozgo->kov != NULL; mozgo = mozgo->kov)
+    for (Asztal *mozgo = asztalok; mozgo != NULL; mozgo = mozgo->kov)
     {
         if (mozgo->sor == sor && mozgo->oszlop == oszlop)
         {

@@ -9,13 +9,17 @@ void vonalKiir(int hossz){
     printf("\n");
 }
 
-void menukListazas(Menu *menuk, int *menuMeret){
+void menukListazas(Menu *menuk){
     printf("Menuk:\n");
     vonalKiir(15);
-    for (int i = 0; i < *menuMeret; i++)
-    {
-        printf("%s\n%s\n%d-Ft\n",menuk[i].nev,menuk[i].leiras,menuk[i].ar);
-        vonalKiir(10);
+    int index = 1;
+    for (Menu* mozgo = menuk; mozgo != NULL; mozgo = mozgo->kov) {
+        printf("%d.)\n", index);
+        printf("%s\n", mozgo->nev);
+        printf("%s\n", mozgo->leiras);
+        printf("%.2d.-Ft\n", mozgo->ar);
+        vonalKiir(15);
+        index++;
     }
 }
 

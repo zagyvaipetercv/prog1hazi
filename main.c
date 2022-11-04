@@ -13,16 +13,18 @@ void asztlaokListazasMain(Asztal* kezdo) {
 
 int main(int argc, char const *argv[]){
     Asztal *asztalok = NULL;
-    asztalok = ujAsztalHozzaad(asztalok, 6, 4, 5);
-    asztalok = ujAsztalHozzaad(asztalok, 1, 1, 1);
-    asztalok = ujAsztalHozzaad(asztalok, 10, 1, 2);
-    asztalok = ujAsztalHozzaad(asztalok, 3, 2, 1);
-    asztalok = ujAsztalHozzaad(asztalok, 1, 5, 1);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 3, 2);
+    Menu* menuk = NULL;
 
-    asztalok = asztalFoglalas(asztalok, 2, 1);
+    menuk = ujMenuFelvetele(menuk, "Rizseshus krumplival", "Rizseshus, Sultkrumpli", 1590);
+    menuk = ujMenuFelvetele(menuk, "Paprikaskrumpli", "paprika krumplival", 4570);
+    menuk = ujMenuFelvetele(menuk, "Krumplis teszta", "Teszta krumplival", 5120);
+    menuk = ujMenuFelvetele(menuk, "Babgulyas", "Bab gulyassal", 3120);
 
-    asztalokListazas(asztalok);
+
+    menukListazas(menuk);
+
+    //menukListazas(menuk);
+
     /*
     int felhasznaloInput;
     while(scanf("%d", &felhasznaloInput) != EOF){
@@ -66,6 +68,7 @@ int main(int argc, char const *argv[]){
     */
 
     asztalokListaFelszabaditas(asztalok);
+    menuFelszabaditas(menuk);
 
     return 0;
 }

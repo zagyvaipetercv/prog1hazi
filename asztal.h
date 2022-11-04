@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <stdio.h>
 
+
 typedef struct Asztal{
     bool elerheto;
     int ferohely;

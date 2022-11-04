@@ -7,7 +7,7 @@
 
 void vonalKiir(int hossz);
 
-void menukListazas(Menu *menuk, int *menuMeret);
+void menukListazas(Menu *menuk);
 
 void asztalokListazas(Asztal *asztalok);
 

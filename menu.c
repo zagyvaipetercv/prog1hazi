@@ -1,90 +1,103 @@
-#include "menu.h"
+﻿#include "menu.h"
 
-// TODO: Rework all (make menu to linked list)
+Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
+	Menu* ujMenu = (Menu*)malloc(sizeof(Menu));
+	strcpy_s(ujMenu->nev, 101, nev);
+	strcpy_s(ujMenu->leiras, 501, leiras);
+	ujMenu->ar = ar;
+	ujMenu->kov = NULL;
 
-//ujMenuFelvetele:
-/*
-    Visszatérítési értéke:  egy Menu pointer, ahova tárolni
-                            szeretnénk az új tömböt
-    Paraméterként kap:      
-        -Menu *menuk:       Menu tipúsú tömb, ahol az eddigi Menu változókat tároltuk
-        -int *menuMeret:    a fentebb említett tömb eddigi mérete (ptr, mert a
-                            fv automatikusan megnöveli eggyel)
-        -char nev[101]:     uj menüpont neve
-        -int ar:            uj menupont ára
+    bool marLetezik = false;
 
-    a fv. futása során létrehoz egy új tömböt, ami tartalmazza a paraméterként megkapott 
-    tömb elmeinek másolatát + 1 új elemet, ami az új tömb végére kerül
-    a menüméretet növeli eggyel, illetve a kapott tömböt felszabadítja 
-
-    VISSZATÉRÍTETT TÖMBÖT FEL KELL SZABADÍTANI! (menuTorlese(...))
-*/
-Menu *ujMenuFelvetele(Menu *menuk, int *menuMeret,char nev[101], char leiras[501], int ar){
-    (* menuMeret)++;   //regi menumeret + 1 = uj menu meret
-    Menu *ujMenuk = (Menu*)malloc((*menuMeret)*sizeof(Menu)); // uj menu létrehozása, ez lesz majd a return érték
-    for (int i = 0; i < *menuMeret-1; i++) //régi elemek átmásolása
+    //Megvizsgálja, hogy a lista első eleme lessz-e az új menu
+    if (menuk == NULL)
     {
-        ujMenuk[i].ar = menuk[i].ar;
-        strcpy_s(ujMenuk[i].nev, 101, menuk[i].nev);
-        strcpy_s(ujMenuk[i].leiras, 501, menuk[i].leiras);
+        //Ha igen, akkor egyből vissza is adja az értéket.
+        return ujMenu;
     }
 
-    // uj elem inicialilizálása
-    ujMenuk[* menuMeret - 1].ar = ar;
-    strcpy_s(ujMenuk[*menuMeret-1].nev, 101, nev);
-    strcpy_s(ujMenuk[*menuMeret - 1].leiras, 501, leiras);
+    //Vizsgálja, hogy létezik-e már a létrehozandó új menu:
+    for (Menu* mozgo = menuk; mozgo != NULL; mozgo = mozgo->kov)
+    {
+        if (strcmp(mozgo->nev,nev) == 0)
+        {
+            //Ha igen, hibaüzentet küld, felszabadítja a menut és a "marLetezik" változót igazra állítja:
+            printf("Mar letezik ilyen menu\n");
+            free(ujMenu);
+            marLetezik = true;
+        }
+    }
 
-    free(menuk); //régi lista törlése
-    return ujMenuk; //uj lista visszatérítése
+    if (!marLetezik)
+    {
+        //Ha még nem létező menut akarunk létrehozni, akkor a lista elejére tűzzük és visszaadjuk
+        ujMenu->kov = menuk;
+        return ujMenu;
+    }
+    else
+    {
+        //Ha már létezőt, akkor pedig az eredeti listát adjuk vissza
+        return menuk;
+    }
 }
 
-//menuPontTorlese:
-/*
-    Visszatérítési érték:   Menu, amiben a törlenő érték nem szerepel
-    Paraméterként kap:
-        -Menu *menuk:           régi menük tömbje, amiben szerepel még minden érték
-        -int *menuMeret:        fentebb említett tömb méretének ptr.-e
-        -int torlendoIndexe:    a törlendo elem indexe
-
-    a fv. futása során létrehoz egy új dinamikus tömböt, amely tartalmazza 
-    paraméterként kapott tömb törlenő elem előtti és utáni elemek másolatát
-
-    paraméterként kapott tömb felszabadul, menuMeret változó értéke csökken eggyel 
-
-    VISSZATÉRÍTETT TÖMBÖT FEL KELL SZABADÍTANI! (menuTorlese(...))
-*/
-Menu *menuPontTorlese(Menu *menuk, int *menuMeret, int torlendoIndexe){
-    Menu *ujMenuk = (Menu*)malloc((*menuMeret-1)*sizeof(Menu));
-    for (int i = 0; i < torlendoIndexe; i++)
+Menu* menuPontKereses(Menu* menuk, int keresettIndex) {
+    Menu* mozgo = menuk;
+    for (int i = 1; i < keresettIndex; i++)
     {
-        ujMenuk[i].ar = menuk[i].ar;
-        strcpy_s(ujMenuk[i].nev, 101, menuk[i].nev);
-        strcpy_s(ujMenuk[i].leiras, 501, menuk[i].leiras);
+        if (mozgo == NULL) {
+            return NULL;
+        }
+        mozgo = mozgo->kov;
     }
-    for (int i = torlendoIndexe+1; i < *menuMeret; i++)
-    {
-        ujMenuk[i-1].ar = menuk[i].ar;
-        strcpy_s(ujMenuk[i-1].nev, 101, menuk[i].nev);
-        strcpy_s(ujMenuk[i-1].leiras, 501, menuk[i].leiras);
-    }
-    
-    *menuMeret--;
-
-    free(menuk);
-    return ujMenuk;
+    return mozgo;
 }
 
-//menuFelszabaditas:
-/*
-    Visszatérítési érték:   nincs
-    Paraméterként kap:
-        -Menu* menuk:       felszabadítandő menuk tömbje
-        -int  menuMeret:    fentebb amlített tömb mérete
-    
-    fv. futása során felszabadítja a kapott tömböt és lenullázza menuMeret változó 
-    értékét
-*/
-void menuFelszabaditas(Menu *menuk, int *menuMeret){
-    free(menuk);
-    *menuMeret = 0;
+Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
+    if (torlendoIndexe < 1)
+    {
+        printf("Megadott elem indexsze tul kicsi (<0)\n");
+        return menuk;
+    }
+    else if (torlendoIndexe == 1)
+    {
+        Menu* tmp = menuk->kov;
+        free(menuk);
+        return tmp;
+    }
+    else
+    {
+        Menu* torlendo = menuPontKereses(menuk, torlendoIndexe);
+        if (torlendo != NULL)
+        {
+            Menu* torlendoElotti = menuPontKereses(menuk, torlendoIndexe - 1);
+            torlendoElotti->kov = torlendo->kov;
+            free(torlendo);
+        }
+        else
+            printf("Megadott elem indexsze tul nagy\n");
+        return menuk;
+    }
+}
+
+Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], int ujAr) {
+    Menu* modositando = menuPontKereses(menuk, modositandoIndex);
+    if (modositando != NULL)
+    {
+        strcpy_s(modositando->nev, 101, ujNev);
+        strcpy_s(modositando->leiras, 501, ujLeiras);
+        modositando->ar = ujAr;
+    }
+    return menuk;
+}
+
+void menuFelszabaditas(Menu *menuk){
+    Menu* tmp;
+    Menu* mozgo = menuk;
+    while (mozgo != NULL)
+    {
+        tmp = mozgo;
+        mozgo = mozgo->kov;
+        free(tmp);
+    }
 }
