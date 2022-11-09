@@ -1,11 +1,14 @@
 #include "asztal.h"
 
-// TODO: egy asztal torlese, ha elso elemet akarjuk törölni, akkor nem fog mukodni, mert torlendo elotti nem letezik
-
 Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
 
     //Új asztal létrehozása, értékeinek megadása:
     Asztal *ujAsztal = (Asztal*)malloc(sizeof(Asztal));
+    if (ujAsztal == NULL)
+    {
+        printf("Nem sikerult uj asztalt letrehozni\n");
+        return;
+    }
     ujAsztal->elerheto = true;
     ujAsztal->ferohely = ferohely;
     ujAsztal->sor = sor;
@@ -76,7 +79,6 @@ Asztal *asztalKereses(Asztal *asztalok, int sor, int oszlop){
 
 Asztal *asztalTorlese(Asztal *asztalok, int sor, int oszlop){
     Asztal *mozgo = asztalok;   //itteráló változó, felveszi a kezdő értéket  
-    Asztal *mozgoElotti = NULL;    //mozgó változót megelőző érték (szükség van rá mert nem két irányú a lista)
 
     Asztal* torlendo = asztalKereses(asztalok, sor, oszlop); //Megkeresi a törlendő elemet
     //Ha ez az elem létezett, akkor...
@@ -90,8 +92,16 @@ Asztal *asztalTorlese(Asztal *asztalok, int sor, int oszlop){
                 torlendoElotti = mozgo;
         }
 
-        //Törlendő előtti elem következő (törlés utáni) listaelem beállítása:
-        torlendoElotti->kov = torlendo->kov;
+        if (torlendoElotti != NULL) { //Ha tölrendő előtti elem létezik (nem első elemet akarunk törölni)
+            torlendoElotti->kov = torlendo->kov; //Törlendő előtti beállítása
+            free(torlendo); //törlendő törlése
+        }
+        else
+        { //Ha első elemet akarjuk törölni
+            Asztal* tmp = asztalok->kov; //Második elemre mutasson egy pointer
+            free(asztalok); //Első elemet felszabadítjuk
+            return tmp; //Visszaadjuk a második elemet
+        }
     }
 
     return asztalok;
@@ -122,6 +132,11 @@ Asztal *asztalFelszabaditas(Asztal *asztalok, int sor, int oszlop){
 
 void maxSorokOszlopok(Asztal *asztalok, int *maxSorok, int *maxOszlopok){ 
     //sorok és oszlopok maximális száma kezdetben az első asztal értéke: 
+    if (asztalok == NULL)
+    {
+        return;
+    }
+
     int sorMax = asztalok->sor;        
     int oszlopMax = asztalok->oszlop;
 

@@ -1,7 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>

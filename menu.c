@@ -2,6 +2,11 @@
 
 Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
 	Menu* ujMenu = (Menu*)malloc(sizeof(Menu));
+    if (ujMenu == NULL)
+    {
+        printf("Nem sikerult uj menut letrehozni\n");
+        return;
+    }
 	strcpy_s(ujMenu->nev, 101, nev);
 	strcpy_s(ujMenu->leiras, 501, leiras);
 	ujMenu->ar = ar;
@@ -43,52 +48,61 @@ Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
 
 Menu* menuPontKereses(Menu* menuk, int keresettIndex) {
     Menu* mozgo = menuk;
-    for (int i = 1; i < keresettIndex; i++)
+    for (int i = 1; i < keresettIndex; i++) //Végighalad a mneüpontokon, a keresett indexig
     {
-        if (mozgo == NULL) {
+        if (mozgo == NULL) { //Ha az index nagyobb lett volna, mint ahány tagja van a listának, visszadob egy NULL-t
             return NULL;
         }
-        mozgo = mozgo->kov;
+        mozgo = mozgo->kov; //nozgó változtatása
     }
-    return mozgo;
+    return mozgo; //Amikor ljutottunk az indexedik elemhez visszadobjuk a ptr-ét
 }
 
 Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
-    if (torlendoIndexe < 1)
+    if (torlendoIndexe < 1) //Ellenőrzi, hogy létező elemet töröljön
     {
-        printf("Megadott elem indexsze tul kicsi (<0)\n");
+        //Ha nem létezik, hibaüzenetet küld és visszadobja a menuk listáját
+        printf("Megadott elem indexsze tul kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)\n");
         return menuk;
     }
     else if (torlendoIndexe == 1)
     {
-        Menu* tmp = menuk->kov;
-        free(menuk);
-        return tmp;
+        //Ha ez első elemet akarjuk törölni, akkor...
+        Menu* tmp = menuk->kov; //Létrehoz egy ptr-t a második elemmel
+        free(menuk); //első elemet felszabadítja
+        return tmp;  //Visszaadja a második elemet
     }
     else
     {
-        Menu* torlendo = menuPontKereses(menuk, torlendoIndexe);
-        if (torlendo != NULL)
+        Menu* torlendo = menuPontKereses(menuk, torlendoIndexe); //megkeresi a törlendő elemet
+        if (torlendo != NULL) //Vizsgálja, hogy tagja-e a listának
         {
-            Menu* torlendoElotti = menuPontKereses(menuk, torlendoIndexe - 1);
-            torlendoElotti->kov = torlendo->kov;
-            free(torlendo);
+            Menu* torlendoElotti = menuPontKereses(menuk, torlendoIndexe - 1); //Ha nem megkeresi a tölrendő elötti tagot
+            torlendoElotti->kov = torlendo->kov; //torlendo elötti elem következő elemének beállítása
+            free(torlendo); //törlendő törlése
         }
         else
-            printf("Megadott elem indexsze tul nagy\n");
-        return menuk;
+            printf("Megadott elem indexsze tul nagy\n"); //Ha nem hibaüzenetet dob
+        return menuk; //Visszadja az új menü törölt elemes menük listáját
     }
 }
 
 Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], int ujAr) {
-    Menu* modositando = menuPontKereses(menuk, modositandoIndex);
-    if (modositando != NULL)
+    if (modositandoIndex < 1) //Vizsgálja a megadott indexet, hogy elég nagy-e
+        //Ha nem hibaüzenetet küld
+        printf("A megadott elem indexe túl kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)");
+    else
     {
-        strcpy_s(modositando->nev, 101, ujNev);
-        strcpy_s(modositando->leiras, 501, ujLeiras);
-        modositando->ar = ujAr;
+        Menu* modositando = menuPontKereses(menuk, modositandoIndex); //megkeresi a módosítandó menüpontot
+        if (modositando != NULL) //Vizsgálja, hogy létezik-e
+        {
+            //Ha igen, akkor..
+            strcpy_s(modositando->nev, 101, ujNev); //Átmásolja az új nevet;
+            strcpy_s(modositando->leiras, 501, ujLeiras); //Átmásolja az új leírást
+            modositando->ar = ujAr; //Beállítja az új árat
+        }
     }
-    return menuk;
+    return menuk; //Visszaadja a módósított menük listáját
 }
 
 void menuFelszabaditas(Menu *menuk){

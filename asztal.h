@@ -1,7 +1,7 @@
 #ifndef ASZTAL_H
 #define ASZTAL_H
 #include <stdbool.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 

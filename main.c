@@ -21,8 +21,11 @@ int main(int argc, char const *argv[]){
     menuk = ujMenuFelvetele(menuk, "Babgulyas", "Bab gulyassal", 3120);
 
 
-    menukListazas(menuk);
+    asztalok = ujAsztalHozzaad(asztalok, 1, 1, 1);
 
+    asztalok = asztalTorlese(asztalok, 1, 1);
+
+    asztalokListazas(asztalok);
     //menukListazas(menuk);
 
     /*

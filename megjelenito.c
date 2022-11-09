@@ -24,6 +24,12 @@ void menukListazas(Menu *menuk){
 }
 
 void asztalokListazas(Asztal *asztalok){
+    if (asztalok == NULL)
+    {
+        printf("Nincs meg assztal\n");
+        return;
+    }
+
     int sorMax, oszlopMax;
     maxSorokOszlopok(asztalok, &sorMax, &oszlopMax);
     bool voltAsztal;
