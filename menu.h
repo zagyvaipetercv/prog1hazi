@@ -1,10 +1,11 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <stdlib.h>
+#include "debugmalloc.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <malloc.h>
 
 //Menuk egy dinamikus tömbben helyezkednek el 
 typedef struct Menu{
@@ -23,5 +24,7 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe);
 Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char* ujAr);
 
 void menuFelszabaditas(Menu *menuk);
+
+Menu* menuMasolas(Menu* masolando);
 
 #endif

@@ -5,7 +5,7 @@ Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
     if (ujMenu == NULL)
     {
         printf("Nem sikerult uj menut letrehozni\n");
-        return;
+        return menuk;
     }
 	strcpy_s(ujMenu->nev, 101, nev);
 	strcpy_s(ujMenu->leiras, 501, leiras);
@@ -47,6 +47,9 @@ Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
 }
 
 Menu* menuPontKereses(Menu* menuk, int keresettIndex) {
+    if (keresettIndex < 1) {
+        return NULL;
+    }
     Menu* mozgo = menuk;
     for (int i = 1; i < keresettIndex; i++) //Végighalad a mneüpontokon, a keresett indexig
     {
@@ -87,7 +90,7 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
     }
 }
 
-Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], int ujAr) {
+Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr[]) {
     if (modositandoIndex < 1) //Vizsgálja a megadott indexet, hogy elég nagy-e
         //Ha nem hibaüzenetet küld
         printf("A megadott elem indexe túl kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)");
@@ -97,10 +100,15 @@ Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char uj
         if (modositando != NULL) //Vizsgálja, hogy létezik-e
         {
             //Ha igen, akkor..
-            strcpy_s(modositando->nev, 101, ujNev); //Átmásolja az új nevet;
-            strcpy_s(modositando->leiras, 501, ujLeiras); //Átmásolja az új leírást
-            modositando->ar = ujAr; //Beállítja az új árat
+            if (ujNev != "")
+                strcpy_s(modositando->nev, 101, ujNev); //Átmásolja az új nevet;
+            if (ujLeiras != "")
+                strcpy_s(modositando->leiras, 501, ujLeiras); //Átmásolja az új leírást
+            if (ujAr != "")
+                modositando->ar = atoi(ujAr); //Beállítja az új árat
         }
+        else
+            printf("A módosítandó elem nem található\n");
     }
     return menuk; //Visszaadja a módósított menük listáját
 }
@@ -114,4 +122,15 @@ void menuFelszabaditas(Menu *menuk){
         mozgo = mozgo->kov;
         free(tmp);
     }
+}
+
+Menu* menuMasolas(Menu* masolando) {
+    Menu* ujMenu = (Menu*)malloc(sizeof(Menu));
+    if (ujMenu == NULL)
+        return NULL;
+    ujMenu->kov = NULL;
+    strcpy(ujMenu->leiras, masolando->leiras);
+    strcpy(ujMenu->nev, masolando->nev);
+    ujMenu->ar = masolando->ar;
+    return ujMenu;
 }

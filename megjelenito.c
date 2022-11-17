@@ -57,3 +57,27 @@ void asztalokListazas(Asztal *asztalok){
         vonalKiir(6*oszlopMax);
     }
 }
+
+void megrendelokListazasa(Rendeles* rendelesek) {
+    int index = 1;
+    for (Rendeles* rendeles = rendelesek; rendeles != NULL; rendeles = rendeles->kov)
+    {
+        printf("%d. %s\n", index, rendeles->renedloNeve);
+        index++;
+    }
+}
+
+void szamlaKiirasa(Rendeles* rendelo) {
+    if (rendelo == NULL)
+    {
+        printf("Nincs ilyen rendelo\n");
+    }
+    else
+    {
+        printf("%s\n", rendelo);
+        vonalKiir(strlen(rendelo));
+        printf("Megrendelt ");
+        menukListazas(rendelo->megrendeltMenuk);
+        printf("Vegosszeg: %d.-Ft\n", rendelesOsszege(rendelo));
+    }
+}

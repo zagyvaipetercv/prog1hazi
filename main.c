@@ -1,19 +1,12 @@
-#include "debugmalloc.h"
 #include "menu.h"
 #include "asztal.h"
 #include "megjelenito.h"
 
 
-void asztlaokListazasMain(Asztal* kezdo) {
-    for (Asztal *mozgo = kezdo; mozgo != NULL; mozgo = mozgo->kov)
-    {
-        printf("%p\n", mozgo);
-    }
-}
-
 int main(int argc, char const *argv[]){
     Asztal *asztalok = NULL;
     Menu* menuk = NULL;
+    Rendeles* rendelesek = NULL;
 
     menuk = ujMenuFelvetele(menuk, "Rizseshus krumplival", "Rizseshus, Sultkrumpli", 1590);
     menuk = ujMenuFelvetele(menuk, "Paprikaskrumpli", "paprika krumplival", 4570);
@@ -21,12 +14,17 @@ int main(int argc, char const *argv[]){
     menuk = ujMenuFelvetele(menuk, "Babgulyas", "Bab gulyassal", 3120);
 
 
-    asztalok = ujAsztalHozzaad(asztalok, 1, 1, 1);
+    menukListazas(menuk);
 
-    asztalok = asztalTorlese(asztalok, 1, 1);
+    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 1));
+    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 2));
+    rendelesek = ujRendelesHozzad(rendelesek, "Moso Misi", menuPontKereses(menuk, 3));
+    rendelesek = ujRendelesHozzad(rendelesek, "Moso Misi", menuPontKereses(menuk, 5));
 
-    asztalokListazas(asztalok);
-    //menukListazas(menuk);
+    megrendelokListazasa(rendelesek);
+
+    szamlaKiirasa(rendeloKereses(rendelesek, 1));
+    szamlaKiirasa(rendeloKereses(rendelesek, 2));
 
     /*
     int felhasznaloInput;
@@ -70,6 +68,7 @@ int main(int argc, char const *argv[]){
     }
     */
 
+    rendelesekFelszabaditasa(rendelesek);
     asztalokListaFelszabaditas(asztalok);
     menuFelszabaditas(menuk);
 

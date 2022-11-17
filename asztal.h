@@ -1,5 +1,6 @@
 #ifndef ASZTAL_H
 #define ASZTAL_H
+#include "debugmalloc.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>

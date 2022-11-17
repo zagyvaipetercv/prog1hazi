@@ -1,4 +1,4 @@
-#include "asztal.h"
+    #include "asztal.h"
 
 Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
 
@@ -7,7 +7,7 @@ Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
     if (ujAsztal == NULL)
     {
         printf("Nem sikerult uj asztalt letrehozni\n");
-        return;
+        return asztalok;
     }
     ujAsztal->elerheto = true;
     ujAsztal->ferohely = ferohely;
