@@ -1,31 +1,28 @@
 #include "menu.h"
 #include "asztal.h"
 #include "megjelenito.h"
-
+#include "fajlkezelo.h"
 
 int main(int argc, char const *argv[]){
     Asztal *asztalok = NULL;
     Menu* menuk = NULL;
     Rendeles* rendelesek = NULL;
+    FILE* fp;
 
-    menuk = ujMenuFelvetele(menuk, "Rizseshus krumplival", "Rizseshus, Sultkrumpli", 1590);
-    menuk = ujMenuFelvetele(menuk, "Paprikaskrumpli", "paprika krumplival", 4570);
-    menuk = ujMenuFelvetele(menuk, "Krumplis teszta", "Teszta krumplival", 5120);
-    menuk = ujMenuFelvetele(menuk, "Babgulyas", "Bab gulyassal", 3120);
+    /*
+    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 1, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 2, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 3, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 1, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 2, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 3, true);
+    asztalok = ujAsztalHozzaad(asztalok, 4, 3, 1, true);
+    asztalokMentese(asztalok, &fp); 
+    */
 
+    asztalok = asztalokBetoltese(asztalok);
 
-    menukListazas(menuk);
-
-    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 1));
-    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 2));
-    rendelesek = ujRendelesHozzad(rendelesek, "Moso Misi", menuPontKereses(menuk, 3));
-    rendelesek = ujRendelesHozzad(rendelesek, "Moso Misi", menuPontKereses(menuk, 5));
-
-    megrendelokListazasa(rendelesek);
-
-    szamlaKiirasa(rendeloKereses(rendelesek, 1));
-    szamlaKiirasa(rendeloKereses(rendelesek, 2));
-
+    asztalokListazas(asztalok);
     /*
     int felhasznaloInput;
     while(scanf("%d", &felhasznaloInput) != EOF){

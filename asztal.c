@@ -1,6 +1,6 @@
     #include "asztal.h"
 
-Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop){
+Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop, bool elerheto){
 
     //Új asztal létrehozása, értékeinek megadása:
     Asztal *ujAsztal = (Asztal*)malloc(sizeof(Asztal));
@@ -152,4 +152,15 @@ void maxSorokOszlopok(Asztal *asztalok, int *maxSorok, int *maxOszlopok){
     //Visszaadjuk a max. sor és oszlop számokat    
     *maxSorok = sorMax;
     *maxOszlopok = oszlopMax;
+}
+
+size_t asztalokMeret(Asztal* asztalok) {
+    int meret = 0;
+    Asztal* mozgo = asztalok;
+    while (mozgo != NULL)
+    {
+        meret++;
+        mozgo = mozgo->kov;
+    }
+    return meret;
 }

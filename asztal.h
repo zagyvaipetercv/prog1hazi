@@ -14,7 +14,7 @@ typedef struct Asztal{
     struct Asztal *kov;
 }Asztal;
 
-Asztal *ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop);
+Asztal *ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop, bool elerheto);
 
 void asztalokListaFelszabaditas(Asztal *asztalok);
 
@@ -27,5 +27,7 @@ Asztal *asztalFoglalas(Asztal *asztalok, int sor, int oszlop);
 Asztal *asztalFelszabaditas(Asztal *asztalok, int sor, int oszlop);
 
 void maxSorokOszlopok(Asztal *asztalok, int *maxSorok, int *maxOszlopok);
+
+size_t asztalokMeret(Asztal* asztalok);
 
 #endif
