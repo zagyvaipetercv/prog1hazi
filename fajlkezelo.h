@@ -23,12 +23,20 @@ typedef struct MenuBuffer {
 
 typedef struct RendelesBuffer {
 	char renedloNeve[101];
-	Menu* megrendeltMenuk;
+	size_t megrendeltMenukSzama;
 }RendelesBuffer;
 
 void asztalokMentese(Asztal* asztalok);
 
 Asztal* asztalokBetoltese(Asztal* asztalok);
+
+void menukMentese(Menu* menuk);
+
+Menu* menukBetoltese(Menu* menuk);
+
+void rendeleskMentese(Rendeles* rendelesek);
+
+Rendeles* rendelesekBetoltese(Rendeles* rendelesek);
 
 #endif
 

@@ -85,3 +85,12 @@ int rendelesOsszege(Rendeles* rendelo) {
 	}
 	return sum;
 }
+
+size_t rendelokSzama(Rendeles* rendelesek) {
+	size_t meret = 0;
+	for (Rendeles* mozgo = rendelesek; mozgo != NULL; mozgo = mozgo->kov)
+	{
+		meret++;
+	}
+	return meret;
+}

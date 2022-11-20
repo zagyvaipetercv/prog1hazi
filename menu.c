@@ -90,7 +90,7 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
     }
 }
 
-Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr[]) {
+Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr) {
     if (modositandoIndex < 1) //Vizsgálja a megadott indexet, hogy elég nagy-e
         //Ha nem hibaüzenetet küld
         printf("A megadott elem indexe túl kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)");
@@ -133,4 +133,11 @@ Menu* menuMasolas(Menu* masolando) {
     strcpy(ujMenu->nev, masolando->nev);
     ujMenu->ar = masolando->ar;
     return ujMenu;
+}
+
+size_t menuMerete(Menu* menuk) {
+    size_t meret = 0;
+    for (Menu* mozgo = menuk; mozgo != NULL; mozgo = mozgo->kov)
+        meret++;
+    return meret;
 }

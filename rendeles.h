@@ -21,4 +21,6 @@ typedef struct Rendeles {
 
 	int rendelesOsszege(Rendeles* rendelo);
 
+	size_t rendelokSzama(Rendeles* rendelesek);
+
 #endif

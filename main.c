@@ -5,24 +5,19 @@
 
 int main(int argc, char const *argv[]){
     Asztal *asztalok = NULL;
-    Menu* menuk = NULL;
-    Rendeles* rendelesek = NULL;
-    FILE* fp;
-
-    /*
-    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 1, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 2, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 1, 3, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 1, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 2, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 2, 3, true);
-    asztalok = ujAsztalHozzaad(asztalok, 4, 3, 1, true);
-    asztalokMentese(asztalok, &fp); 
-    */
-
     asztalok = asztalokBetoltese(asztalok);
+    
+    Menu* menuk = NULL;
+    menuk = menukBetoltese(menuk);
+    
+    Rendeles* rendelesek = NULL;
 
-    asztalokListazas(asztalok);
+    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 1));
+    rendelesek = ujRendelesHozzad(rendelesek, "Kolczer Karoly", menuPontKereses(menuk, 2));
+    rendelesek = ujRendelesHozzad(rendelesek, "Zsak Bela", menuPontKereses(menuk, 3));
+
+    rendeleskMentese(rendelesek);
+
     /*
     int felhasznaloInput;
     while(scanf("%d", &felhasznaloInput) != EOF){

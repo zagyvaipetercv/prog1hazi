@@ -21,10 +21,12 @@ Menu* menuPontKereses(Menu* menuk, int keresettIndex);
 
 Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe);
 
-Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char* ujAr);
+Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr);
 
 void menuFelszabaditas(Menu *menuk);
 
 Menu* menuMasolas(Menu* masolando);
+
+size_t menuMerete(Menu* menuk);
 
 #endif
