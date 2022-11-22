@@ -243,6 +243,34 @@ Menu* menukBetoltese(Menu* menuk) {
 	return mozgo;
 }
 
+bool allomanynevElkeszites(int i, char *allomanynev) {
+	//Allomanynev elkeszitese:
+	strcpy_s(allomanynev, 17,"rendelo_m");
+	char elem[4] = "";
+	itoa(i, elem, 10);
+
+	if (i < 10) {
+		char tmp[4] = "";
+		strcat_s(tmp, 4, "00");
+		strcat_s(tmp, 4, elem);
+		strcpy_s(elem, 4, tmp);
+	}
+	else if (i < 100) {
+		char tmp[4] = "";
+		strcat_s(tmp, 4, "0");
+		strcat_s(tmp, 4, elem);
+		strcpy_s(elem, 4, tmp);
+	}
+	else if (i >= 1000) {
+		printf("A rendelesek szama megahaladja a maximalis (1000 db) meretet\n");
+		return false;
+	}
+	strcat_s(allomanynev, 17, elem);
+	strcat_s(allomanynev, 17, ".dat");
+
+	return true;
+}
+
 void rendeleskMentese(Rendeles* rendelesek) {
 	FILE* fp;
 
@@ -285,6 +313,7 @@ void rendeleskMentese(Rendeles* rendelesek) {
 	{
 		strcpy_s(rBuffer[i].renedloNeve, 101, mozgo->renedloNeve);
 		rBuffer[i].megrendeltMenukSzama = menuMerete(mozgo->megrendeltMenuk);
+		mozgo = mozgo->kov;
 	}
 
 	size_t kiirtrendelokSzama = fwrite(rBuffer, sizeof(RendelesBuffer), rendelesekMeret, fp);
@@ -299,31 +328,12 @@ void rendeleskMentese(Rendeles* rendelesek) {
 
 	for (size_t i = 0; i < rendelesekMeret; i++)
 	{
-		//Allomanynev elkeszitese:
-		char allomanynev[17] = "rendelo_m";
-		char elem[4] = "";
-		itoa(i, elem, 10);
+		char allomanynev[17];
 
-		if (i < 10) {
-			char tmp[4] = "";
-			strcat_s(tmp, 4, "00");
-			strcat_s(tmp, 4, elem);
-			strcpy_s(elem, 4, tmp);
-		}
-		else if (i < 100) {
-			char tmp[4] = "";
-			strcat_s(tmp, 4, "0");
-			strcat_s(tmp, 4, elem);
-			strcpy_s(elem, 4, tmp);
-		}
-		else if (i >= 1000) {
-			printf("A rendelesek szama megahaladja a maximalis (1000 db) meretet\n");
+		if(!allomanynevElkeszites(i, allomanynev)){
 			free(rBuffer);
 			return;
 		}
-		strcat_s(allomanynev, 17, elem);
-		strcat_s(allomanynev, 17, ".dat");
-
 
 		//Allomany megnyitasa:
 		fopen_s(&fp, allomanynev, "wb");
@@ -347,11 +357,12 @@ void rendeleskMentese(Rendeles* rendelesek) {
 
 		//MenuBuffer feltoltese i. rendelo rendelesivel:
 		Menu* menu = rendeloKereses(rendelesek, i + 1)->megrendeltMenuk;
-		for (size_t i = 0; i < rBuffer[i].megrendeltMenukSzama; i++)
+		for (size_t j = 0; j < rBuffer[i].megrendeltMenukSzama; j++)
 		{
-			mBuffer[i].ar = menu->ar;
-			strcpy_s(mBuffer[i].leiras, 501, menu->leiras);
-			strcpy_s(mBuffer[i].nev, 101, menu->nev);
+			mBuffer[j].ar = menu->ar;
+			strcpy_s(mBuffer[j].leiras, 501, menu->leiras);
+			strcpy_s(mBuffer[j].nev, 101, menu->nev);
+			menu = menu->kov;
 		}
 
 		size_t kiirtMenuk = fwrite(mBuffer, sizeof(MenuBuffer), rBuffer[i].megrendeltMenukSzama, fp);
@@ -367,6 +378,109 @@ void rendeleskMentese(Rendeles* rendelesek) {
 	free(rBuffer);
 }
 
-Rendeles* rendelesekBetoltese(Rendeles* rendelesek) {
 
+Rendeles* rendelesekBetoltese(Rendeles* rendelesek) {
+	FILE* fp;
+
+	//Rendelesek szamat tartalmazo allomayn megynitasa:
+	fopen_s(&fp, "rendelesek_szama.dat", "rb");
+	if (fp == NULL)
+	{
+		printf("Nem sikerlt megnyitni a rendelesek_szama.dat allomanyt\n");
+		return rendelesek;
+	}
+	
+	//Rednelesek szamanak olvasasa:
+	size_t rendelesekMeret;
+	size_t sikeresRendelseSzamlvasas = fread_s(&rendelesekMeret, sizeof(size_t), sizeof(size_t), 1, fp);
+	fclose(fp);
+	if (sikeresRendelseSzamlvasas == 0)
+	{
+		printf("Nem sikerult rendelesek_szama.dat allomany olvasasa\n");
+		return rendelesek;
+	}
+
+	//Ha nem volt redneles:
+	if (rendelesekMeret == 0)
+	{
+		return NULL;
+	}
+
+	//Rednelesek megynitasa:
+	fopen_s(&fp, "rendelesek.dat", "rb");
+	if (fp == NULL)
+	{
+		printf("Nem sikerult megynitni rendelesek.dat allomanyt\n");
+		return;
+	}
+
+	//Rendelesek Buffere:
+	RendelesBuffer* rBuffer = (RendelesBuffer*)malloc(rendelesekMeret * sizeof(RendelesBuffer));
+	if (rBuffer == NULL)
+	{
+		printf("Rendeles buffert nem sikerult letrehozni\n");
+		fclose(fp);
+		return rendelesek;
+	}
+
+	//rendelések betoltese bufferbe
+	size_t olvasottRendelesek = fread_s(rBuffer, rendelesekMeret * sizeof(RendelesBuffer), sizeof(RendelesBuffer), rendelesekMeret, fp);
+	fclose(fp);
+	if (olvasottRendelesek < rendelesekMeret)
+	{
+		printf("Nem sikerult minden rendleset olvasni\n");
+		free(rBuffer);
+		return rendelesek;
+	}
+
+
+	Rendeles* mozgo = rendelesek;
+	for (size_t i = 0; i < rendelesekMeret; i++)
+	{
+		char allomanynev[17];
+
+		if (!allomanynevElkeszites(i, allomanynev))
+		{
+			free(rBuffer);
+			return rendelesek;
+		}
+
+		fopen_s(&fp, allomanynev, "rb");
+		if (fp == NULL)
+		{
+			printf("Nem sikerult %s allomany megynitasa\n", allomanynev);
+			free(rBuffer);
+			return rendelesek;
+		}
+
+		MenuBuffer* mBuffer = (MenuBuffer*)malloc(2 * sizeof(MenuBuffer));
+		if (mBuffer == NULL)
+		{
+			printf("MenuBuffert nem sikerult letrehozni\n");
+			fclose(fp);
+			free(rBuffer);
+			return;
+		}
+
+		size_t beolvasottElemek = fread_s(mBuffer,2*sizeof(MenuBuffer), sizeof(MenuBuffer), 2, fp);
+		if (beolvasottElemek < rBuffer[i].megrendeltMenukSzama)
+		{
+			printf("Nem sikerult kiirni a Menu Buffer tartalmat\n");
+			free(mBuffer);
+			free(rBuffer);
+			fclose(fp);
+			return;
+		}
+
+		for (size_t j = 0; j < rBuffer[i].megrendeltMenukSzama; j++)
+		{
+			Menu* menu = &(mBuffer[j]);
+			mozgo = ujRendelesHozzad(mozgo, rBuffer[i].renedloNeve, menu);
+		}
+
+		free(mBuffer);
+		fclose(fp);
+	}
+	free(rBuffer);
+	return mozgo;
 }
