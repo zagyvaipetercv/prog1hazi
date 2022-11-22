@@ -21,6 +21,7 @@ Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop, boo
     if (asztalok == NULL)
     {
         //Ha igen, akkor egyből vissza is adja az értéket.
+        printf("Uj asztal sikeresen letrehozva\n");
         return ujAsztal;
     }
 
@@ -40,6 +41,7 @@ Asztal* ujAsztalHozzaad(Asztal *asztalok, int ferohely, int sor, int oszlop, boo
     {
         //Ha még nem létező asztalt akarunk létrehozni, akkor a lista elejére tűzzük és visszaadjuk
         ujAsztal->kov = asztalok;
+        printf("Uj asztal sikeresen letrehozva\n");
         return ujAsztal;
     }
     else
@@ -95,11 +97,13 @@ Asztal *asztalTorlese(Asztal *asztalok, int sor, int oszlop){
         if (torlendoElotti != NULL) { //Ha tölrendő előtti elem létezik (nem első elemet akarunk törölni)
             torlendoElotti->kov = torlendo->kov; //Törlendő előtti beállítása
             free(torlendo); //törlendő törlése
+            printf("Asztal sikeresen torolve\n");
         }
         else
         { //Ha első elemet akarjuk törölni
             Asztal* tmp = asztalok->kov; //Második elemre mutasson egy pointer
             free(asztalok); //Első elemet felszabadítjuk
+            printf("Asztal sikeresen torolve\n");
             return tmp; //Visszaadjuk a második elemet
         }
     }
@@ -114,8 +118,10 @@ Asztal *asztalFoglalas(Asztal *asztalok, int sor, int oszlop){
     {
         if (keresett->elerheto == false) //Megvizsgálja hogy foglalt asztalt akarunk-e foglalni
             printf("A(z) (%d-sor) (%d-oszlop) asztal mar foglalt\n", keresett->sor, keresett->oszlop); //Ha igen, akkor hibaüzenetet küld
-        else //Ha nem, akkor lefoglalja
+        else { //Ha nem, akkor lefoglalja
             keresett->elerheto = false;
+            printf("Asztal sikeresen lefoglalva\n");
+        }
     }
     return asztalok;
 }
@@ -127,6 +133,8 @@ Asztal *asztalFelszabaditas(Asztal *asztalok, int sor, int oszlop){
     {
         keresett->elerheto = true;
     }
+
+    printf("Asztal sikeresen felszabaditva\n");
     return asztalok;
 }
 
