@@ -21,7 +21,7 @@ void asztalokMentese(Asztal* asztalok) {
 	{
 		printf("Nem sikerult elmenteni a metaadatokat\n");
 		return;
-	}
+	} 
 
 	//Letrehozza buffert
 	AsztalBuffer* buffer = (AsztalBuffer*)malloc(asztalokMerete * sizeof(AsztalBuffer));

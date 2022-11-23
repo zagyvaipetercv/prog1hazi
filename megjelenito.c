@@ -17,9 +17,9 @@ void menukListazas(Menu *menuk){
     int index = 1;
     for (Menu* mozgo = menuk; mozgo != NULL; mozgo = mozgo->kov) {
         printf("%d.)\n", index);
-        printf("%s\n", mozgo->nev);
-        printf("%s\n", mozgo->leiras);
-        printf("%.2d.-Ft\n", mozgo->ar);
+        printf("%s", mozgo->nev);
+        printf("%s", mozgo->leiras);
+        printf("%2d.-Ft\n", mozgo->ar);
         vonalKiir(15);
         index++;
     }
@@ -76,7 +76,7 @@ void szamlaKiirasa(Rendeles* rendelo) {
     }
     else
     {
-        printf("%s\n", rendelo);
+        printf("%s\n", rendelo->renedloNeve);
         vonalKiir(strlen(rendelo));
         printf("Megrendelt ");
         menukListazas(rendelo->megrendeltMenuk);

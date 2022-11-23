@@ -25,7 +25,6 @@ int menuHivas() {
     return inputbolSzam();
 }
 
-
 int main(int argc, char const *argv[]){
     Asztal *asztalok = NULL;
     asztalok = asztalokBetoltese(asztalok);
@@ -35,7 +34,6 @@ int main(int argc, char const *argv[]){
     
     Rendeles* rendelesek = NULL;
     rendelesek = rendelesekBetoltese(rendelesek);
-
 
     int input = menuHivas();
     while(input != 0) {
@@ -54,7 +52,6 @@ int main(int argc, char const *argv[]){
             break;
         }
         case 2://Asztal foglalas
-        {
             printf("ASZTAL FOGLALASA:\n");
             asztalokListazas(asztalok);
 
@@ -64,13 +61,17 @@ int main(int argc, char const *argv[]){
                 sor = inputbolSzam();
                 printf("Melik oszlop? ");
                 oszlop = inputbolSzam();
-                asztalok = asztalFoglalas(asztalok, sor, oszlop);
+                Asztal* asztal = asztalKereses(asztalok, sor, oszlop);
+                if (asztal != NULL) {
+                    if (asztal->elerheto)
+                        asztalok = asztalFoglalas(asztalok, sor, oszlop);
+                    else
+                        asztalok = asztalFelszabaditas(asztalok, sor, oszlop);
+                }
             }
 
             break;
-        }
         case 3://Asztal torles
-        {
             printf("ASZTAL TORLESE:\n");
             asztalokListazas(asztalok);
 
@@ -85,7 +86,6 @@ int main(int argc, char const *argv[]){
             }
 
             break;            
-        }
         case 4://Uj menu hozzaadas
         {
             printf("UJ MENU LETREHOZASA:\n");
@@ -138,7 +138,7 @@ int main(int argc, char const *argv[]){
                     fgets(ujNev, 101, stdin);
                     printf("Menu uj leirasa:\n");
                     fgets(ujLeiras, 501, stdin);
-                    printf("Menu uj ara:");
+                    printf("Menu uj ara:\n");
                     int ujAr = inputbolSzam();
                     menuModositasa(menu, ujNev, ujLeiras, ujAr);
                 }
@@ -146,16 +146,92 @@ int main(int argc, char const *argv[]){
 
             break;
         case 7://Rendeles felvetele
-            
+            printf("RENDELES FELVETELE:\n");
+            menukListazas(menuk);
+            if (menuk != NULL) {
+                char rendelo[101];
+                printf("Megrendelt menu szama:\n");
+                int index = inputbolSzam();
+                Menu* menu = menuPontKereses(menuk, index);
+                if (menu != NULL)
+                {
+                    printf("Megrendelo neve:\n");
+                    fgets(rendelo, 101, stdin);
+                    rendelesek = ujRendelesHozzad(rendelesek, rendelo, menu);
+                }
+                else
+                    printf("Megadott menu nem letezik\n");
+            }
+
             break;
         case 8://Rendeles torlese
-            
+            printf("RENDELES TORLESES\n");
+            if (rendelesek != NULL)
+            {
+                megrendelokListazasa(rendelesek);
+                printf("Kinek a rendelese torlendo? (1-%d)\n", (int)rendelokSzama(rendelesek));
+                printf("0: kilepeshez\n");
+                int index = inputbolSzam();
+                if (index != 0)
+                {
+                    Rendeles* rendelo = rendeloKereses(rendelesek, index);
+                    printf("%s altal rendlet ", rendelo->renedloNeve);
+                    menukListazas(rendelo->megrendeltMenuk);
+                    printf("Melyik menu torlendo? (1-%d)\n", (int)menuMerete(rendelo->megrendeltMenuk));
+                    printf("0: Kilepes torlesbol\n");
+                    int torlendoMenuIndexe = inputbolSzam();
+                    if (torlendoMenuIndexe != 0) {
+                        rendelesek = rendelesTorlese(rendelesek, index, torlendoMenuIndexe);
+                    }
+                    else
+                        printf("Torlesbol kilepes\n");
+                }
+                else
+                    printf("Torlesbol kilepes\n");
+            }
+            else
+                printf("Nincsenek meg rendelesek\n");
+
             break;
         case 9://Szamlazas
-            
+            if (rendelesek != NULL)
+            {
+                megrendelokListazasa(rendelesek);
+                printf("Kinek a rendelese szamlazando? (1-%d)\n", (int)rendelokSzama(rendelesek));
+                printf("0: Kilepes szamlazasbol\n");
+                int index = inputbolSzam();
+                if (index != 0)
+                {
+                    Rendeles* rendelo = rendeloKereses(rendelesek, index);
+                    if (rendelo != NULL)
+                    {
+                        szamlaKiirasa(rendelo);
+                        printf("Szamlazott rendeles torlendo? (1 = igen, 0 = nem)\n");
+                        int valasz = inputbolSzam();
+                        while (valasz != 1 && valasz != 0) {
+                            printf("Helytelen bevitel\n");
+                            printf("Valasz lehet:\n");
+                            printf("1: ha rendeles torlendo\n");
+                            printf("0: ha rendeles nem torlendo\n");
+                            valasz = inputbolSzam();
+                        }
+                        if (valasz == 1)
+                        {
+                            for (size_t i = menuMerete(rendelo->megrendeltMenuk); i > 0; i--)
+                            {
+                                rendelesek = rendelesTorlese(rendelesek, index, i);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                printf("Meg nincsenek rendelesek\n");
+
             break;
         default:
-            printf("Ervenytelen beviteli ertek\nKerlek valassz a fenti ertekek kozul (0-9)\n\n");
+            printf("Ervenytelen beviteli ertek\n");
+            printf("Kerlek valassz az kovetkezo ertekek kozul (0-9)\n");
             break;
         }
         input = menuHivas();

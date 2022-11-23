@@ -38,6 +38,7 @@ Rendeles* ujRendelesHozzad(Rendeles* rendelesek, char* rendelo, Menu* megrendelt
 		ujRendelo->megrendeltMenuk = ujMenu; //Megrendelt menut definiálja
 	
 		ujRendelo->kov = rendelesek; //Beilleszti lista elejere
+		printf("Uj rendeles sikeresen felveve\n");
 		return ujRendelo; //Visszaadja az uj rendelesek lista kezdo pointerét
 	}
 	else //Ha már létezett a rendelo
@@ -45,6 +46,7 @@ Rendeles* ujRendelesHozzad(Rendeles* rendelesek, char* rendelo, Menu* megrendelt
 		// az uj rendelt menut  lista elejere teszi, majd visszaadja az eredeti rendelesek listat
 		ujMenu->kov = rendeles->megrendeltMenuk; 
 		rendeles->megrendeltMenuk = ujMenu;
+		printf("Uj rendeles sikeresen felveve\n");
 		return rendelesek;
 	}
 }
@@ -93,4 +95,62 @@ size_t rendelokSzama(Rendeles* rendelesek) {
 		meret++;
 	}
 	return meret;
+}
+
+Rendeles* rendelesTorlese(Rendeles* rendelesek, int* torlendoRendelesIndexe, int torlendoMenuIndexe) {
+	//Megkeresi a torlendo elemet:
+	Rendeles* torlendoRendeles = rendeloKereses(rendelesek, torlendoRendelesIndexe);
+	//Megvizsgalja, hogy letezik-e a torlendo elem:
+	if (torlendoRendeles != NULL)
+	{
+		//Megvizsgalja, hogy a torlendo menu letezik-e:
+		if (menuPontKereses(torlendoRendeles->megrendeltMenuk,torlendoMenuIndexe) != NULL)
+		{
+			//Torli a menut a rendelesek kozul:
+			torlendoRendeles->megrendeltMenuk = menuPontTorlese(torlendoRendeles->megrendeltMenuk, torlendoMenuIndexe);
+			//Vizsgalja, hogy van-e még menu az adott rendelonel:
+			if (torlendoRendeles->megrendeltMenuk == NULL)
+			{
+				//Ha nincs akkor törli a rendelot is a rendelesek listabol:
+				//(Külön kezeli az elso elem torleset a tobbitol)
+				//Ha elso elemet torlunk:
+				if (torlendoRendelesIndexe == 1)
+				{
+					//Elmenti a masodik es elso elemet:
+					Rendeles* masodik = rendelesek->kov;
+					Rendeles* tmp = rendelesek;
+					//Elsot felszabadítja:
+					free(rendelesek);
+					printf("Sikeres torles\n");
+					//Masodikat vissaadja értékként:
+					return masodik;
+				}
+				//Ha nem elso elemet torlunk:
+				else
+				{
+					//Megkeresi a torlendo elotti elemet:
+					Rendeles* torlendoElotti = rendelesek;
+					while (torlendoElotti->kov != torlendoRendeles && torlendoElotti != NULL)
+					{
+						torlendoElotti = torlendoElotti->kov;
+					}
+					//Vizsgalja, hogy ez letezik-e (Kéne létezni-e csak egy biztosítas)
+					if (torlendoElotti != NULL)
+					{
+						//Átállítja a torlendo elotti követekző elemre mutató pointerét:
+						torlendoElotti->kov = torlendoRendeles->kov;
+						//Felszabadítja a törlendőt:
+						free(torlendoRendeles);
+					}
+				}
+			}
+		}
+	}
+	else
+		//Ha nem letezett a torlendo elem jelzi:
+		printf("Nem letezik ilyen rendelo\n");
+
+	//Visszatériti a módósított listát és jelzi hogy sikeres volt:
+	printf("Sikeres torles\n");
+	return rendelesek;
 }
