@@ -21,7 +21,7 @@ Menu* menuPontKereses(Menu* menuk, int keresettIndex);
 
 Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe);
 
-Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr);
+void menuModositasa(Menu* menu, char ujNev[101], char ujLeiras[501], int ujAr);
 
 void menuFelszabaditas(Menu *menuk);
 

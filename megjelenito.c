@@ -12,6 +12,8 @@ void vonalKiir(int hossz){
 void menukListazas(Menu *menuk){
     printf("Menuk:\n");
     vonalKiir(15);
+    if (menuk == NULL)
+        printf("Nincs meg menu tarolva\n");
     int index = 1;
     for (Menu* mozgo = menuk; mozgo != NULL; mozgo = mozgo->kov) {
         printf("%d.)\n", index);

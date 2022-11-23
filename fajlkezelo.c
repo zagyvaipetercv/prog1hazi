@@ -5,6 +5,8 @@ void asztalokMentese(Asztal* asztalok) {
 
 	//Megadja hogy mekkorának kell lenni a buffernak
 	size_t asztalokMerete = asztalokMeret(asztalok);
+	if (asztalokMerete == 0)
+		return;
 
 	//Elmenti a metaadatokat
 	fopen_s(&fp, "asztalok_elemszam.dat", "wb");

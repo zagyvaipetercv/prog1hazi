@@ -18,6 +18,7 @@ Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
     if (menuk == NULL)
     {
         //Ha igen, akkor egyből vissza is adja az értéket.
+        printf("Uj menu sikeresen letrehozva\n");
         return ujMenu;
     }
 
@@ -37,11 +38,13 @@ Menu *ujMenuFelvetele(Menu *menuk, char nev[101], char leiras[501], int ar){
     {
         //Ha még nem létező menut akarunk létrehozni, akkor a lista elejére tűzzük és visszaadjuk
         ujMenu->kov = menuk;
+        printf("Uj menu sikeresen letrehozva\n");
         return ujMenu;
     }
     else
     {
         //Ha már létezőt, akkor pedig az eredeti listát adjuk vissza
+        printf("Nem sikerult uj menut letrehozni\n");
         return menuk;
     }
 }
@@ -62,10 +65,11 @@ Menu* menuPontKereses(Menu* menuk, int keresettIndex) {
 }
 
 Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
+
     if (torlendoIndexe < 1) //Ellenőrzi, hogy létező elemet töröljön
     {
         //Ha nem létezik, hibaüzenetet küld és visszadobja a menuk listáját
-        printf("Megadott elem indexsze tul kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)\n");
+        printf("Kilepett a torlesbol\n");
         return menuk;
     }
     else if (torlendoIndexe == 1)
@@ -73,6 +77,7 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
         //Ha ez első elemet akarjuk törölni, akkor...
         Menu* tmp = menuk->kov; //Létrehoz egy ptr-t a második elemmel
         free(menuk); //első elemet felszabadítja
+        printf("Menu sikeresen torolve\n");
         return tmp;  //Visszaadja a második elemet
     }
     else
@@ -83,6 +88,7 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
             Menu* torlendoElotti = menuPontKereses(menuk, torlendoIndexe - 1); //Ha nem megkeresi a tölrendő elötti tagot
             torlendoElotti->kov = torlendo->kov; //torlendo elötti elem következő elemének beállítása
             free(torlendo); //törlendő törlése
+            printf("Menu sikeresen torolve\n");
         }
         else
             printf("Megadott elem indexsze tul nagy\n"); //Ha nem hibaüzenetet dob
@@ -90,27 +96,23 @@ Menu *menuPontTorlese(Menu *menuk, int torlendoIndexe){
     }
 }
 
-Menu* menuModositasa(Menu* menuk, int modositandoIndex, char ujNev[101], char ujLeiras[501], char ujAr) {
-    if (modositandoIndex < 1) //Vizsgálja a megadott indexet, hogy elég nagy-e
+void menuModositasa(Menu* menu, char ujNev[101], char ujLeiras[501], int ujAr) {
+    if (menu == NULL) //Vizsgálja hogy letezik-e a kivalasztott menu
+    {
         //Ha nem hibaüzenetet küld
-        printf("A megadott elem indexe túl kicsi (indexnek nagyobb vagy egyenlőnek kell lennie 1-gyel.)");
+        printf("Nincs ilyen menu\n");
+    }
     else
     {
-        Menu* modositando = menuPontKereses(menuk, modositandoIndex); //megkeresi a módosítandó menüpontot
-        if (modositando != NULL) //Vizsgálja, hogy létezik-e
-        {
-            //Ha igen, akkor..
-            if (ujNev != "")
-                strcpy_s(modositando->nev, 101, ujNev); //Átmásolja az új nevet;
-            if (ujLeiras != "")
-                strcpy_s(modositando->leiras, 501, ujLeiras); //Átmásolja az új leírást
-            if (ujAr != "")
-                modositando->ar = atoi(ujAr); //Beállítja az új árat
-        }
-        else
-            printf("A módosítandó elem nem található\n");
+        //Ha igen, akkor..
+        if (strcmp(ujNev, "\n") != 0)
+            strcpy_s(menu->nev, 101, ujNev); //Átmásolja az új nevet;
+        if (strcmp(ujLeiras, "\n") != 0)
+            strcpy_s(menu->leiras, 501, ujLeiras); //Átmásolja az új leírást
+        if (ujAr != 0)
+            menu->ar = ujAr; //Beállítja az új árat
     }
-    return menuk; //Visszaadja a módósított menük listáját
+    return; //Visszaadja a módósított menük listáját
 }
 
 void menuFelszabaditas(Menu *menuk){
